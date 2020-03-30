@@ -1,0 +1,44 @@
+@import "src/@fuse/scss/fuse";
+
+.pdf-preview-dialog {
+  margin: 0 auto;
+  @include media-breakpoint('xs') {
+    width: 100%;
+  }
+
+  @include media-breakpoint-up('xs') {
+    width: 100%;
+  }
+
+  .mat-dialog-container {
+    padding: 0 !important;
+
+    .mat-toolbar {
+      flex: 1 0 auto;
+      min-height: initial;
+    }
+
+    .toolbar-bottom {
+      height: auto;
+    }
+  }
+
+  .dialog-content-wrapper {
+    max-height: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #707880;
+  }
+}
+
+.pdfViewer {
+  height: 100%;
+  overflow-y: scroll;
+}
+
+.mat-dialog-content {
+  height: 100%;
+  min-height: 100%;
+}
+

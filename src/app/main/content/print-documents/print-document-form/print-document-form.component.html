@@ -1,0 +1,83 @@
+<div class="dialog-content-wrapper">
+
+    <mat-toolbar matDialogTitle class="mat-accent m-0">
+        <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+            <span class="title dialog-title">{{ printDocument?.id === 0? 'New': 'Update' }}  Document</span>
+            <button mat-icon-button (click)="dialogRef.close()" aria-label="Close dialog">
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-toolbar-row>
+    </mat-toolbar>
+
+    <div mat-dialog-content class="pt-24 pl-24 pr-24 m-0" fusePerfectScrollbar>
+
+        <form [formGroup]="printDocumentForm">
+
+            <input name="id" type="hidden" formControlName="id">
+
+            <div class=" mb-16" fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field fxFlex>
+                    <input name="name" formControlName="name" placeholder="Name" matInput required>
+                </mat-form-field>
+            </div>
+
+            <div class="mb-16" fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field fxFlex>
+                    <input name="fileName" formControlName="fileName" placeholder="File name" matInput required>
+                    <mat-hint>Exact name to match with print request</mat-hint>
+                </mat-form-field>
+            </div>
+
+            <div class="mb-16" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="start start">
+                <mat-form-field fxFlex="50">
+                    <mat-select name="defaultPrinter" [compareWith]="selectedPrinter" formControlName="defaultPrinter" placeholder="Default Printer">
+                        <mat-option [value]="null">
+                            None
+                        </mat-option>
+                        <mat-option *ngFor="let printer of printers" [value]="printer">
+                            {{ printer?.name }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field fxFlex="50">
+                    <mat-select name="defaultPrinterTray" formControlName="defaultPrinterTray"
+                                placeholder="Default Printer Tray">
+                        <mat-option [value]="-1">
+                            None
+                        </mat-option>
+                        <mat-option *ngFor="let printerTray of printerTrays" [value]="printerTray.id">
+                            {{ printerTray.name }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div fxFlex="100" fxLayoutAlign="start center">
+                <mat-checkbox name="autoPrint" formControlName="autoPrint">
+                    Auto-print
+                </mat-checkbox>
+            </div>
+
+        </form>
+
+    </div>
+
+    <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="space-between center">
+
+        <button *ngIf="printDocument?.id != 0"
+                mat-icon-button
+                (click)="dialogRef.close(['delete',printDocumentForm])"
+                aria-label="Delete"
+                matTooltip="Delete">
+            <mat-icon>delete</mat-icon>
+        </button>
+        <button
+                mat-raised-button
+                (click)="save()"
+                class="save-button mat-accent"
+                [disabled]="printDocumentForm.invalid"
+                aria-label="Save">
+            Save
+        </button>
+    </div>
+
+</div>

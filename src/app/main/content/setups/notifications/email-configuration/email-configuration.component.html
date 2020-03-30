@@ -1,0 +1,44 @@
+<mat-toolbar class="mat-grey-200-bg" fxLayoutAlign="start center">
+    <span>Email Configurations</span>
+    <span class="fill-remaining-space"></span>
+    <mat-form-field fxFlex="40" *ngIf="false">
+        <mat-select placeholder="Select SMS Provider">
+            <mat-option value="africas-talking">Africa's Talking</mat-option>
+        </mat-select>
+    </mat-form-field>
+</mat-toolbar>
+<div class="mat-white-bg p-24" fxFlex fxLayout="column">
+    <div fxLayoutAlign="center center" fxFlex="100" *ngIf="fetchingConfiguration">
+        <mat-progress-spinner  mode="indeterminate"></mat-progress-spinner>
+    </div>
+    <form *ngIf="!fetchingConfiguration" [formGroup]="emailChannelConfigurationForm" fxFlex fxLayout="column">
+        <input name="id" type="hidden" formControlName="id">
+        <div fxLayout="row" fxFlex>
+            <div class="mb-16" fxLayoutGap="10px" fxFlex fxLayout="row"
+                 fxLayoutAlign="start start">
+                <mat-form-field fxFlex="50">
+                    <input name="host" placeholder="Host" formControlName="host" matInput required>
+                </mat-form-field>
+                <mat-form-field fxFlex="50">
+                    <input name="port" placeholder="Port" formControlName="port" matInput required>
+                </mat-form-field>
+            </div>
+        </div>
+        <div fxLayout="row" fxFlex>
+            <div class="mb-16" fxFlex fxLayoutGap="10px" fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field fxFlex="50">
+                    <input name="user" placeholder="User" formControlName="user" matInput required>
+                </mat-form-field>
+                <mat-form-field fxFlex="50">
+                    <input name="password" placeholder="Password" formControlName="password" matInput required>
+                </mat-form-field>
+            </div>
+        </div>
+    </form>
+    <div class="mat-action-row" fxLayoutAlign="end">
+        <button mat-raised-button color="accent" (click)="save()"
+                *ngIf="!fetchingConfiguration"
+                [disabled]="emailChannelConfigurationForm.invalid || updatingConfiguration">Save
+        </button>
+    </div>
+</div>

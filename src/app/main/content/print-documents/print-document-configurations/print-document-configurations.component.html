@@ -1,0 +1,109 @@
+<div id="print-documents" class="page-layout simple left-sidenav inner-sidenav">
+
+    <!-- HEADER -->
+    <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start"
+         fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="space-between center">
+
+        <!-- APP TITLE -->
+        <div fxLayout="row" fxLayoutAlign="start center">
+
+            <button mat-icon-button [routerLink]="'/print-documents'">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+
+            <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+                <mat-icon class="logo-icon mr-16" *fuseIfOnDom
+                          [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">file_copy
+                </mat-icon>
+                <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">
+                    {{ printDocument?.name }}
+                </span>
+            </div>
+
+        </div>
+        <!-- / APP TITLE -->
+    </div>
+
+    <div class="content p-24">
+
+        <ngx-datatable
+                class="material"
+                [rows]="rows"
+                [loadingIndicator]="loadingIndicator"
+                [columnMode]="'force'"
+                [headerHeight]="48"
+                [footerHeight]="56"
+                [rowHeight]="'auto'"
+                [scrollbarH]="true"
+                [reorderable]="reorderable"
+                [selectionType]="'checkbox'"
+                [limit]="10">
+
+            <ngx-datatable-column [width]="48"
+                                  [canAutoResize]="false"
+                                  [sortable]="false">
+                <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected"
+                             let-selectFn="selectFn">
+                    <mat-checkbox [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"></mat-checkbox>
+                </ng-template>
+
+                <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected"
+                             let-onCheckboxChangeFn="onCheckboxChangeFn">
+                    <mat-checkbox [checked]="isSelected" (change)="onCheckboxChangeFn($event)"></mat-checkbox>
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Pages" prop="pages">
+
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Printer" prop="printer">
+                <ng-template ngx-datatable-cell-template let-value="value">
+                    {{ value?.name }}
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Printer Tray" prop="printerTray">
+                <ng-template ngx-datatable-cell-template let-value="value">
+                    {{ value | printerTray }}
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Auto Print" prop="autoPrint">
+                <ng-template ngx-datatable-cell-template let-value="value">
+                    {{ value? 'Yes':'No' }}
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Options">
+                <ng-template ngx-datatable-cell-template let-row="row">
+                    <div class="button-row">
+                        <button mat-icon-button [matMenuTriggerFor]="optionsMenu">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                    </div>
+                    <mat-menu #optionsMenu="matMenu">
+                        <button mat-menu-item (click)="editPrintConfiguration(row)">
+                            Edit
+                        </button>
+                        <mat-divider></mat-divider>
+                        <button mat-menu-item (click)="deletePrintConfiguration(row)">
+                            <mat-icon>delete</mat-icon>
+                            Delete
+                        </button>
+                    </mat-menu>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+    </div>
+
+</div>
+
+
+<!-- ADD PRINT-CONFIG BUTTON -->
+<button mat-fab class="mat-accent-bg" id="add-print-document-configuration-button" aria-label="add document"
+        (click)="addPrintConfiguration()"
+        *fuseIfOnDom [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}">
+    <mat-icon>add</mat-icon>
+</button>
+<!-- / ADD PRINT-CONFIG BUTTON -->

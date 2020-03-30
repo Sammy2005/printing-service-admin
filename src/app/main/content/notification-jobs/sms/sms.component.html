@@ -1,0 +1,173 @@
+<div id="sms" class="page-layout simple left-sidenav inner-sidenav">
+
+    <!-- HEADER -->
+    <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start"
+         fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="space-between center">
+
+        <!-- APP TITLE -->
+        <div fxLayout="row" fxLayoutAlign="start center">
+
+            <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+                <mat-icon class="logo-icon mr-16" *fuseIfOnDom
+                          [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">message
+                </mat-icon>
+                <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">
+                    SMS Jobs
+                </span>
+            </div>
+
+        </div>
+        <!-- / APP TITLE -->
+
+        <!-- SEARCH -->
+        <div *ngIf="false" class="search-input-wrapper mt-16 ml-8 m-sm-0" fxLayout="row" fxLayoutAlign="start center">
+            <label for="search" class="mr-8">
+                <mat-icon>search</mat-icon>
+            </label>
+            <mat-form-field mat-no-float class="m-0" floatLabel="never">
+                <input matInput [(ngModel)]="searchQuery" (ngModelChange)="onSearchQueryChanged($event)" id="search"
+                       placeholder="Search using reference number">
+            </mat-form-field>
+        </div>
+        <!-- / SEARCH -->
+
+    </div>
+    <!-- / HEADER -->
+
+    <!-- Select bar -->
+    <div class="selection-bar mat-accent-600-bg" [@slideIn] *ngIf="selected.length > 0">
+        <div fxFlex fxLayout="row" fxLayoutAlign="start center" class="p-24">
+
+            <div class="close-button-wrapper" fxFlex="0 1 auto" fxFlex.gt-sm="220px" (click)="deselectAll()">
+                <button class="p-8" mat-button fxLayout="row" fxLayoutAlign="start center">
+                    <mat-icon class="mr-8">arrow_back</mat-icon>
+                    <span class="text-uppercase">Back</span>
+                </button>
+            </div>
+
+            <div fxFlex fxLayout="row" fxLayoutAlign="end center" fxLayoutAlign.gt-sm="space-between center">
+
+                <div>
+                    <span class="selected-contacts-count">
+                        <span class="mr-4">1</span>
+                        <span>selected</span>
+                    </span>
+
+                    <button mat-icon-button [matMenuTriggerFor]="selectMenu">
+                        <mat-icon>arrow_drop_down</mat-icon>
+                    </button>
+                    <mat-menu #selectMenu="matMenu">
+                        <button mat-menu-item (click)="selectAll()">Select all</button>
+                        <button mat-menu-item (click)="deselectAll()">Deselect all</button>
+                    </mat-menu>
+
+                </div>
+                <div fxLayout="row">
+                    <div class="multi-select-actions">
+                        <button mat-icon-button aria-label="Send notification">
+                            <mat-icon>chat</mat-icon>
+                        </button>
+                    </div>
+
+                    <div class="multi-select-actions">
+                        <button mat-icon-button aria-label="delete selected">
+                            <mat-icon>print</mat-icon>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <!--/ Select bar-->
+
+    <div class="content p-24">
+
+        <ngx-datatable
+                class="material"
+                [rows]="filteredRows"
+                [loadingIndicator]="loadingIndicator"
+                [columnMode]="'force'"
+                [headerHeight]="48"
+                [footerHeight]="56"
+                [rowHeight]="'auto'"
+                [scrollbarH]="true"
+                [selected]="selected"
+                [reorderable]="reorderable"
+                [selectionType]="'checkbox'"
+                [limit]="10">
+
+            <ngx-datatable-column [width]="48"
+                                  [canAutoResize]="false"
+                                  [sortable]="false">
+                <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected"
+                             let-selectFn="selectFn">
+                    <mat-checkbox [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"></mat-checkbox>
+                </ng-template>
+
+                <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected"
+                             let-onCheckboxChangeFn="onCheckboxChangeFn">
+                    <mat-checkbox [checked]="isSelected" (change)="onCheckboxChangeFn($event)"></mat-checkbox>
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Recipient" prop="notification" [width]="200">
+                <ng-template ngx-datatable-cell-template let-value="value">
+                    {{ value?.notificationRecipient?.name }} ({{ value?.notificationRecipient?.phoneNumber}})
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Message" prop="notification" [width]="300">
+                <ng-template ngx-datatable-cell-template let-value="value">
+                    {{ value?.message }}
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Status" [width]="120">
+                <ng-template ngx-datatable-cell-template let-row="row">
+                    <span class="mat-amber-500-bg p-4" *ngIf="row.pending">Pending</span>
+                    <span class="mat-green-500-bg p-4" *ngIf="row.success">Sent</span>
+                    <span class="mat-red-500-bg p-4" *ngIf="!row.success && !row.pending">Failed</span>
+                    <span class="mat-blue-500-bg p-4" *ngIf="row.queued">Queued</span>
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Date" prop="createdAt" [width]="100">
+                <ng-template ngx-datatable-cell-template let-value="value">
+                    {{ value | date: 'dd-MM-y' }}
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Options" *ngIf="false">
+                <ng-template ngx-datatable-cell-template let-row="row">
+                    <div class="button-row" *ngIf="!row.statusUpdating">
+                        <button mat-icon-button [matMenuTriggerFor]="optionsMenu">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                    </div>
+                    <mat-spinner *ngIf="row.statusUpdating" [diameter]="20" [strokeWidth]="2"
+                                 mode="indeterminate"></mat-spinner>
+                    <mat-menu #optionsMenu="matMenu">
+                        <button mat-menu-item *ngIf="false">
+                            <mat-icon>file_download</mat-icon>
+                            Download file
+                        </button>
+                    </mat-menu>
+                </ng-template>
+            </ngx-datatable-column>
+
+        </ngx-datatable>
+
+    </div>
+
+</div>
+
+<!-- FILTER SMS BUTTON -->
+<button mat-fab class="mat-accent-bg" style="display: none" id="filter-notification-jobs-button"
+        aria-label="filter"
+        *fuseIfOnDom [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}">
+    <mat-icon>filter_list</mat-icon>
+</button>
+<!-- / FILTER SMS BUTTON -->
+

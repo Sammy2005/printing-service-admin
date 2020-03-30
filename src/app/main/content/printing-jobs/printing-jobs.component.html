@@ -1,0 +1,211 @@
+<div id="print-requests" class="page-layout simple left-sidenav inner-sidenav">
+
+    <!-- HEADER -->
+    <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start"
+         fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="space-between center">
+
+        <!-- APP TITLE -->
+        <div fxLayout="row" fxLayoutAlign="start center">
+
+            <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+                <mat-icon class="logo-icon mr-16" *fuseIfOnDom
+                          [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">flash_on
+                </mat-icon>
+                <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Printing Jobs</span>
+            </div>
+
+        </div>
+        <!-- / APP TITLE -->
+
+        <!-- SEARCH -->
+        <div class="search-input-wrapper mt-16 ml-8 m-sm-0" fxLayout="row" fxLayoutAlign="start center">
+            <label for="search" class="mr-8">
+                <mat-icon>search</mat-icon>
+            </label>
+            <mat-form-field mat-no-float class="m-0" floatLabel="never">
+                <input matInput id="search" placeholder="Search" [(ngModel)]="searchQuery"
+                       (ngModelChange)="onSearchQueryChanged($event)">
+            </mat-form-field>
+        </div>
+        <!-- / SEARCH -->
+
+    </div>
+    <!-- / HEADER -->
+
+    <!-- Select bar -->
+    <div class="selection-bar mat-accent-600-bg" [@slideIn] *ngIf="selected.length > 0">
+        <div fxFlex fxLayout="row" fxLayoutAlign="start center" class="p-24">
+
+            <div class="close-button-wrapper" fxFlex="0 1 auto" fxFlex.gt-sm="220px" (click)="deselectAll()">
+                <button class="p-8" mat-button fxLayout="row" fxLayoutAlign="start center">
+                    <mat-icon class="mr-8">arrow_back</mat-icon>
+                    <span class="text-uppercase">Back</span>
+                </button>
+            </div>
+
+            <div fxFlex fxLayout="row" fxLayoutAlign="end center" fxLayoutAlign.gt-sm="space-between center">
+
+                <div>
+                    <span class="selected-contacts-count">
+                        <span class="mr-4">1</span>
+                        <span>selected</span>
+                    </span>
+
+                    <button mat-icon-button [matMenuTriggerFor]="selectMenu">
+                        <mat-icon>arrow_drop_down</mat-icon>
+                    </button>
+                    <mat-menu #selectMenu="matMenu">
+                        <button mat-menu-item (click)="selectAll()">Select all</button>
+                        <button mat-menu-item (click)="deselectAll()">Deselect all</button>
+                    </mat-menu>
+
+                </div>
+                <div fxLayout="row">
+                    <div class="multi-select-actions">
+                        <button mat-icon-button aria-label="Send notification">
+                            <mat-icon>chat</mat-icon>
+                        </button>
+                    </div>
+
+                    <div class="multi-select-actions">
+                        <button mat-icon-button aria-label="delete selected">
+                            <mat-icon>print</mat-icon>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <!--/ Select bar-->
+
+    <div class="content p-24">
+
+        <ngx-datatable
+                class="material"
+                [rows]="filteredRows"
+                [loadingIndicator]="loadingIndicator"
+                [columnMode]="'force'"
+                [selected]="selected"
+                [headerHeight]="48"
+                [footerHeight]="56"
+                [rowHeight]="'auto'"
+                [scrollbarH]="true"
+                [reorderable]="reorderable"
+                [selectionType]="'checkbox'"
+                [limit]="10">
+
+            <ngx-datatable-column [width]="48"
+                                  [canAutoResize]="false"
+                                  [sortable]="false">
+                <ng-template ngx-datatable-header-template let-value="value" let-allRowsSelected="allRowsSelected"
+                             let-selectFn="selectFn">
+                    <mat-checkbox [checked]="allRowsSelected" (change)="selectFn(!allRowsSelected)"></mat-checkbox>
+                </ng-template>
+
+                <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected"
+                             let-onCheckboxChangeFn="onCheckboxChangeFn">
+                    <mat-checkbox [checked]="isSelected" (change)="onCheckboxChangeFn($event)"></mat-checkbox>
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Printer/Tray" prop="printer">
+                <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                    {{ value?.name }}/ {{ row.printerTray | printerTray}}
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Document" prop="printRequest">
+                <ng-template ngx-datatable-cell-template let-value="value">
+                    {{ value?.printDocument?.name }} <span *ngIf="value?.documentReference">({{ value?.documentReference }})</span>
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="File Available" [width]="100" prop="documentAvailable">
+                <ng-template ngx-datatable-cell-template let-value="value">
+                    <span class="mat-red-500-bg p-4" *ngIf="!value">Deleted</span>
+                    <span class="mat-green-500-bg p-4" *ngIf="value">Available</span>
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column *ngIf="false" name="Job ID" prop="jobId" [width]="60">
+
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Page(s)" prop="pages" [width]="120">
+
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Count" prop="pagesCount" [width]="60">
+
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Date" prop="createdAt" [width]="120">
+                <ng-template ngx-datatable-cell-template let-value="value">
+                    {{ value | date: 'dd-MM-y' }}
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Status" prop="status" [width]="150">
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                    <mat-spinner *ngIf="row.statusUpdating" [diameter]="20" [strokeWidth]="2"
+                                 mode="indeterminate"></mat-spinner>
+                    <ng-container *ngIf="!row.statusUpdating">
+                        <span class="mat-amber-500-bg p-4" *ngIf="row.jobId == -1">Awaiting print</span>
+                        <span class="mat-blue-500-bg p-4" *ngIf="row.jobId != -1 && row.status == ''">On Queue</span>
+                        <span class="mat-green-500-bg p-4" *ngIf="row.jobId != -1 && row.completed">Printed</span>
+                        <span class="mat-amber-500-bg p-4"
+                              *ngIf="row.jobId != -1 && !row.completed && row.status == 'completed'">{{ value }}</span>
+                        <span class="mat-red-500-bg p-4" *ngIf="row.jobId != -1 && !row.completed">{{ value }}</span>
+                    </ng-container>
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Options" [width]="80">
+                <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex">
+                    <div class="button-row">
+                        <button mat-icon-button [matMenuTriggerFor]="optionsMenu">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                    </div>
+                    <mat-menu #optionsMenu="matMenu">
+                        <button mat-menu-item (click)="downloadPrintDocument(row)" *ngIf="false">
+                            <mat-icon>file_download</mat-icon>
+                            Download file
+                        </button>
+                        <button mat-menu-item [disabled]="!row.documentAvailable" (click)="previewPrintDocument(row)">
+                            <mat-icon>remove_red_eye</mat-icon>
+                            Preview
+                        </button>
+                        <button mat-menu-item [disabled]="!row.documentAvailable"
+                                (click)="startPrintingJob(row, rowIndex)">
+                            <mat-icon>print</mat-icon>
+                            Print
+                        </button>
+                        <button mat-menu-item (click)="deletePrintingJob(row, rowIndex)">
+                            <mat-icon>delete</mat-icon>
+                            Delete
+                        </button>
+                        <button mat-menu-item (click)="showPrintLog(row)" *ngIf="false">
+                            <mat-icon>format_list_bulleted</mat-icon>
+                            Print log
+                        </button>
+                    </mat-menu>
+                </ng-template>
+            </ngx-datatable-column>
+        </ngx-datatable>
+
+    </div>
+
+</div>
+
+<!-- FILTER PRINTING JOBS BUTTON -->
+<button (click)="filterPrintingJobs()"
+        mat-fab class="mat-accent-bg" id="filter-printing-jobs-button" aria-label="filter printing jobs"
+        matBadge="*" matBadgePosition="before" matBadgeColor="warn" [matBadgeHidden]="printFilter == null"
+        *fuseIfOnDom [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}">
+    <mat-icon>filter_list</mat-icon>
+</button>
+<!-- / FILTER PRINTING JOBS BUTTON -->
+

@@ -1,0 +1,85 @@
+<div class="dialog-content-wrapper">
+
+    <mat-toolbar matDialogTitle class="mat-accent m-0">
+        <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+            <span class="title dialog-title">{{ printDocumentConfiguration?.id === 0? 'New': 'Update' }}  Print Configuration</span>
+            <button mat-icon-button (click)="dialogRef.close()" aria-label="Close dialog">
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-toolbar-row>
+    </mat-toolbar>
+
+    <div mat-dialog-content class="pt-24 pl-24 pr-24 m-0" fusePerfectScrollbar>
+
+        <form [formGroup]="printDocumentConfigurationForm">
+
+            <input name="id" type="hidden" formControlName="id">
+
+            <div class="mb-16" fxLayoutGap="10px" fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field fxFlex="50">
+                    <input type="text" name="pages" formControlName="pages" placeholder="Pages" matInput
+                           required>
+                    <mat-hint>Pages: 1-5 or 1,4,7 or 1-3,5,7-9</mat-hint>
+                    <mat-error *ngIf="printDocumentConfigurationForm.controls.pages.invalid">
+                        Invalid pages/range
+                    </mat-error>
+                </mat-form-field>
+
+                <div fxFlex="50" fxLayoutAlign="start center">
+                    <mat-checkbox name="autoPrint" formControlName="autoPrint">
+                        Auto-print
+                    </mat-checkbox>
+                </div>
+
+            </div>
+
+
+            <div class="mb-16" fxLayout="row" fxLayoutGap="10px" fxLayoutAlign="start start">
+                <mat-form-field fxFlex="50">
+                    <mat-select name="printer" [compareWith]="selectedPrinter" formControlName="printer"
+                                placeholder="Printer">
+                        <mat-option [value]="null">
+                            None
+                        </mat-option>
+                        <mat-option *ngFor="let printer of printers" [value]="printer">
+                            {{ printer?.name }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field fxFlex="50">
+                    <mat-select name="printerTray" formControlName="printerTray"
+                                placeholder="Printer Tray">
+                        <mat-option [value]="-1">
+                            None
+                        </mat-option>
+                        <mat-option *ngFor="let printerTray of printerTrays" [value]="printerTray.id">
+                            {{ printerTray.name }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+        </form>
+
+    </div>
+
+    <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="space-between center">
+
+        <button *ngIf="printDocumentConfiguration?.id != 0"
+                mat-icon-button
+                (click)="dialogRef.close(['delete',printDocumentConfigurationForm])"
+                aria-label="Delete"
+                matTooltip="Delete">
+            <mat-icon>delete</mat-icon>
+        </button>
+        <button
+                mat-raised-button
+                (click)="save()"
+                class="save-button mat-accent"
+                [disabled]="printDocumentConfigurationForm.invalid"
+                aria-label="Save">
+            Save
+        </button>
+    </div>
+
+</div>

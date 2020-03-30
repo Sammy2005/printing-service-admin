@@ -1,0 +1,20 @@
+<div fxLayout="column" fxFlex [formGroup]="configurationForm">
+  <div fxLayout="column" fxFlex formGroupName="configuration">
+    <div class="mb-16" fxLayoutGap="10px" fxLayout="row" fxLayoutAlign="start start">
+      <mat-form-field fxFlex="50">
+        <input name="username" formControlName="username" placeholder="Username"
+               matInput required>
+      </mat-form-field>
+      <mat-form-field fxFlex="50">
+        <input name="password" formControlName="password" placeholder="Password" matInput
+               required>
+      </mat-form-field>
+    </div>
+    <div class="mb-16" fxLayoutGap="10px" fxLayout="row" fxLayoutAlign="start start">
+      <mat-form-field fxFlex>
+        <input name="shortCode" formControlName="shortCode" placeholder="Short Code"
+               matInput>
+      </mat-form-field>
+    </div>
+  </div>
+</div>

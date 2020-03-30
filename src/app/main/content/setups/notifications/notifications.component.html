@@ -1,0 +1,65 @@
+<div id="notifications-setups" class="page-layout simple left-sidenav inner-sidenav" fxFlex>
+
+    <!-- HEADER -->
+    <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start"
+         fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="space-between center">
+
+        <!-- APP TITLE -->
+        <div fxLayout="row" fxLayoutAlign="start center">
+
+            <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+                <mat-icon class="logo-icon mr-16" *fuseIfOnDom
+                          [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">settings
+                </mat-icon>
+                <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Configure Notifications</span>
+            </div>
+
+        </div>
+        <!-- / APP TITLE -->
+
+    </div>
+    <!-- / HEADER -->
+
+    <div class="content m-24 mat-elevation-z4 mat-white-bg">
+
+        <mat-sidenav-container>
+            <mat-sidenav class="sidenav mat-grey-200-bg" position="start" opened="true" mode="side"
+                         fuseMatSidenavHelper="notification-channels-setup-sidenav" mat-is-locked-open="gt-sm" fxFlex>
+                <div class="sidenav-content" fxFlex>
+                    <div class="card" fxFlex>
+                        <div class="header p-16" fxLayoutAlign="start">
+                            <span class="h3 title">
+                                Notification Channels
+                            </span>
+                        </div>
+                        <div class="content py-16" fusePerfectScrollbar>
+                            <div class="nav">
+                                <div class="nav-item" aria-label="Email">
+                                    <a class="nav-link" matRipple (click)="configureEmailView()"
+                                       [ngClass]="{'active': configurationType === 'email'}">
+                                        <mat-icon class="p-2">mail</mat-icon>
+                                        <span class="title m-4">Email</span>
+                                    </a>
+                                </div>
+                                <div class="nav-item" aria-label="Email">
+                                    <a class="nav-link" matRipple (click)="configureSmsView()"
+                                       [ngClass]="{'active': configurationType === 'sms'}">
+                                        <mat-icon class="p-2">message</mat-icon>
+                                        <span class="title m-4">SMS</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </mat-sidenav>
+            <div class="mat-white-bg h-400" fusePerfectScrollbar>
+                <app-email-configuration *ngIf="configurationType === 'email'"></app-email-configuration>
+                <app-sms-configuration *ngIf="configurationType === 'sms'"></app-sms-configuration>
+            </div>
+        </mat-sidenav-container>
+
+    </div>
+    <!-- / CONTENT CARD -->
+
+</div>

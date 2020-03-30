@@ -1,0 +1,41 @@
+<mat-toolbar class="mat-grey-200-bg" fxLayoutAlign="center center">
+    <span>Sms Configurations</span>
+    <span class="fill-remaining-space"></span>
+    <div fxFlex="40"></div>
+    <mat-form-field fxFlex="40" [formGroup]="smsChannelConfigurationForm">
+        <mat-select [(value)]="smsChannelConfigurationForm.value.provider" formControlName="provider"
+                    placeholder="Select SMS Provider">
+            <mat-option value="africas-talking">Africa's Talking</mat-option>
+            <mat-option value="infobip">Infobip</mat-option>
+            <mat-option value="sms-tech">SMS Tech</mat-option>
+            <mat-option value="m-tech">M Tech</mat-option>
+        </mat-select>
+    </mat-form-field>
+</mat-toolbar>
+<div class="content-wrapper p-24">
+    <div class="content" fxFlex fxLayout="column">
+        <form [formGroup]="smsChannelConfigurationForm" fxFlex>
+            <input name="id" type="hidden" formControlName="id">
+            <div fxLayoutAlign="center center">
+                <mat-progress-spinner *ngIf="fetchingConfiguration" mode="indeterminate"></mat-progress-spinner>
+            </div>
+            <app-africas-talking *ngIf="smsChannelConfigurationForm.value.provider === 'africas-talking'"
+                                 [configuration]="smsConfiguration?.configuration"
+                                 [configurationForm]="smsChannelConfigurationForm"></app-africas-talking>
+
+            <app-infobip *ngIf="smsChannelConfigurationForm.value.provider === 'infobip'"
+                         [configuration]="smsConfiguration?.configuration"
+                         [configurationForm]="smsChannelConfigurationForm"></app-infobip>
+
+            <app-africas-talking *ngIf="smsChannelConfigurationForm.value.provider === 'm-tech'"
+                                 [configuration]="smsConfiguration?.configuration"
+                                 [configurationForm]="smsChannelConfigurationForm"></app-africas-talking>
+        </form>
+        <div class="mat-action-row" fxLayoutAlign="end bottom">
+            <button mat-raised-button *ngIf="!fetchingConfiguration" [disabled]="smsChannelConfigurationForm.invalid || updatingConfiguration"
+                    color="accent" (click)="save()">
+                Save
+            </button>
+        </div>
+    </div>
+</div>

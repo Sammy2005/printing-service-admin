@@ -1,0 +1,24 @@
+<div class="dialog-content-wrapper">
+
+    <mat-toolbar matDialogTitle class="mat-accent m-0 h-56">
+        <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+            <span class="title dialog-title">Preview</span>
+            <div fxLayout="row">
+                <button mat-icon-button (click)="dialogRef.close()" aria-label="Print">
+                    <mat-icon>print</mat-icon>
+                </button>
+                <button mat-icon-button (click)="dialogRef.close()" aria-label="Close dialog">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    <mat-dialog-content>
+        <pdf-viewer [src]="pdfSrc"
+                    class="pdf-preview"
+                    [render-text]="true"
+                    style="display: block;">
+        </pdf-viewer>
+    </mat-dialog-content>
+
+</div>
